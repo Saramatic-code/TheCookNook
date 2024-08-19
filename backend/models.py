@@ -9,4 +9,4 @@ class Recipe(Base):
     cook_time = Column(Integer)
     servings = Column(Integer)
     instructions = Column(String)
-    ingredients = Column(String)  # For simplicity, store as a comma-separated string
+    ingredients = Column(String)  
