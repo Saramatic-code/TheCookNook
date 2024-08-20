@@ -15,6 +15,7 @@ module.exports = {
         },
         secondary: '#000000',
         background: '#FFFFFF',
+        mutedPink: '#fcebed', // Add mutedPink here
       },
     },
   },
