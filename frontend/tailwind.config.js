@@ -1,20 +1,22 @@
+/** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       colors: {
         primary: {
-          light: '#F3BFC4', // Light Pink
-          DEFAULT: '#F29BAA', // Main Pink from logo
-          dark: '#D17384', // Darker Pink
+          light: '#F3BFC4',
+          DEFAULT: '#F29BAA',
+          dark: '#D17384',
         },
-        secondary: '#000000', // Black
-        background: '#FFFFFF', // White/Light Pink
+        secondary: '#000000',
+        background: '#FFFFFF',
       },
     },
   },
   plugins: [],
-}
+};
