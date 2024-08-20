@@ -15,9 +15,7 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user_by_username(db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
+    if not user or not verify_password(password, user.hashed_password):
         return False
     return user
 
@@ -42,3 +40,19 @@ def create_ingredient(db: Session, ingredient: schemas.IngredientCreate):
     db.commit()
     db.refresh(db_ingredient)
     return db_ingredient
+
+# CRUD operations for favorites
+def add_favorite(db: Session, favorite: schemas.FavoriteCreate):
+    db_favorite = models.Favorite(**favorite.dict())
+    db.add(db_favorite)
+    db.commit()
+    db.refresh(db_favorite)
+    return db_favorite
+
+# CRUD operations for comments
+def add_comment(db: Session, comment: schemas.CommentCreate):
+    db_comment = models.Comment(**comment.dict())
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment
