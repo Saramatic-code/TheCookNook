@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar = () => {
     return (
-        <nav className="bg-primary p-4">
+        <nav className="bg-mutedPink p-4">
             <div className="max-w-screen-xl mx-auto flex justify-between items-center">
                 <div className="flex items-center">
                     <img
@@ -15,11 +15,11 @@ const Navbar = () => {
                 </div>
 
                 <div className="hidden md:flex space-x-8">
-                    <a href="#" className="text-secondary hover:text-primary-dark">Home</a>
-                    <a href="#" className="text-secondary hover:text-primary-dark">About</a>
-                    <a href="#" className="text-secondary hover:text-primary-dark">Services</a>
-                    <a href="#" className="text-secondary hover:text-primary-dark">Pricing</a>
-                    <a href="#" className="text-secondary hover:text-primary-dark">Contact</a>
+                    <a href="/" className="text-secondary hover:text-primary-dark">Home</a>
+                    <a href="/contact" className="text-secondary hover:text-primary-dark">Contact Us</a>
+                    <a href="/login" className="text-secondary hover:text-primary-dark">Login</a>
+                    <a href="/signup" className="text-secondary hover:text-primary-dark">Signup</a>
+                    <a href="/favorites" className="text-secondary hover:text-primary-dark">Favorites</a>
                 </div>
             </div>
         </nav>
