@@ -1,30 +1,11 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import Navbar from '../components/navbar';
 
-const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleLogin = async () => {
-        try {
-            const response = await axios.post('http://localhost:8000/login/', {
-                username,
-                password,
-            });
-            // Handle successful login, e.g., store token
-        } catch (error) {
-            console.error("Login failed", error);
-        }
-    };
-
+export default function Login() {
     return (
         <div>
-            <h1>Login</h1>
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-            <button onClick={handleLogin}>Login</button>
+            <Navbar />
+            <h1 className="text-4xl font-bold text-center mt-8 text-primary-dark ">Login</h1>
+            <p className="text-center mt-4text-primary-dark ">Login form will go here.</p>
         </div>
     );
-};
-
-export default Login;
+}
