@@ -1,3 +1,36 @@
+/* global.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.main-content {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+    width: 100%;
+    background-color: #fcebed;
+    /* Make sure it matches your theme */
+    text-align: center;
+    padding: 10px 0;
+}
