@@ -3,8 +3,10 @@ import React from 'react';
 const Footer = () => {
     return (
         <footer className="bg-mutedPink text-center text-secondary py-4">
-            <img src="/logo.png" alt="Logo" style={{ height: '40px', width: '40px', marginBottom: '10px' }} />
-            <p>© 2024 Healthy Recipes. All rights reserved.</p>
+            <div className="flex flex-col items-center">
+                <img src="/logo.png" alt="Logo" className="h-10 w-10 mb-2" />
+                <p>© 2024 Healthy Recipes. All rights reserved.</p>
+            </div>
         </footer>
     );
 };
