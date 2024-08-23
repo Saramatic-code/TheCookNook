@@ -38,8 +38,11 @@ const Navbar = () => {
                     <Link href="/" legacyBehavior>
                         <a className="text-[#696969] hover:text-primary-dark">Home</a>
                     </Link>
-                    <Link href="/recipes" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark">Recipes</a>
+                    <Link href="/myRecipes" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">My Recipes</a>
+                    </Link>
+                    <Link href="/addRecipe" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Add Recipe</a>
                     </Link>
                     <Link href="/favorites" legacyBehavior>
                         <a className="text-[#696969] hover:text-primary-dark">Favorites</a>
