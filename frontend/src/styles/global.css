@@ -8,6 +8,8 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: #FFF4F2;
+    /* Update the background color */
 }
 
 body {
@@ -30,7 +32,6 @@ footer {
     margin-top: auto;
     width: 100%;
     background-color: #fcebed;
-    /* Make sure it matches your theme */
     text-align: center;
     padding: 10px 0;
 }
