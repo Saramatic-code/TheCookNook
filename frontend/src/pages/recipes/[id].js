@@ -37,12 +37,12 @@ export default function RecipeDetail() {
             <div className="main-content p-4 flex flex-col items-center">
                 <div className="max-w-3xl w-full text-[#696969]">
                     <img src={recipe.image} alt={recipe.title} className="recipe-image w-full h-72 object-cover rounded-lg" />
-                    <h1 className="text-4xl font-bold mt-4 text-center bg-[#fcebed]">{recipe.title}</h1>
+                    <h1 className="text-4xl font-bold mt-4 text-center bg-mutedPink">{recipe.title}</h1>
 
                     {/* Tags Section */}
                     <div className="flex flex-wrap justify-center mt-2">
                         {recipe.tags.map((tag, index) => (
-                            <span key={index} className="bg-[#fcebed] text-[#696969] px-2 py-1 rounded-lg m-1">
+                            <span key={index} className="bg-mutedPink text-secondary px-2 py-1 rounded-lg m-1">
                                 {tag}
                             </span>
                         ))}
@@ -51,11 +51,16 @@ export default function RecipeDetail() {
                     <p className="mt-2 text-center">{recipe.prep_time} | {recipe.cook_time} | Servings: {recipe.servings}</p>
 
                     <h2 className="text-2xl font-semibold mt-4">Ingredients</h2>
-                    <ul className="list-disc list-inside mt-2">
+                    <ul className="list-disc list-inside mt-2 space-y-4">
                         {recipe.ingredients.map((ing, index) => (
-                            <li key={index}>
-                                {ing.quantity} {ing.item} - {ing.notes}
-                                <button onClick={() => addToShoppingList(ing)} className="ml-2 text-blue-500 underline">Add to Shopping List</button>
+                            <li key={index} className="flex justify-between items-center">
+                                <span>{ing.quantity} {ing.item} - {ing.notes}</span>
+                                <button
+                                    onClick={() => addToShoppingList(ing)}
+                                    className="ml-4 px-3 py-1 bg-primary text-background font-semibold rounded hover:bg-primary-dark transition-colors"
+                                >
+                                    Add to List
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -76,7 +81,10 @@ export default function RecipeDetail() {
                     </ul>
 
                     {/* Shopping List Button */}
-                    <button onClick={sendShoppingList} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">
+                    <button
+                        onClick={sendShoppingList}
+                        className="mt-4 px-4 py-2 bg-primary text-background font-semibold rounded hover:bg-primary-dark transition-colors"
+                    >
                         Send Shopping List to Phone
                     </button>
                 </div>
