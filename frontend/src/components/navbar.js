@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -7,13 +8,17 @@ const Navbar = () => {
         <nav className="bg-mutedPink p-4 relative">
             <div className="max-w-screen-xl mx-auto flex justify-between items-center">
                 <div className="flex items-center">
-                    <img
-                        src="/logo.png"
-                        alt="Healthy Recipes Logo"
-                        style={{ height: '50px', width: '50px' }}
-                        className="mr-4"
-                    />
-                    <span className="text-2xl font-semibold text-secondary">Healthy Recipes</span>
+                    <Link href="/" legacyBehavior>
+                        <a>
+                            <img
+                                src="/logo.png"
+                                alt="Healthy Recipes Logo"
+                                style={{ height: '50px', width: '50px' }}
+                                className="mr-4"
+                            />
+                        </a>
+                    </Link>
+                    <span className="text-2xl font-semibold text-[#696969]">Healthy Recipes</span>
                 </div>
 
                 {/* Hamburger Menu Button */}
@@ -30,22 +35,48 @@ const Navbar = () => {
 
                 {/* Links for Desktop */}
                 <div className="hidden md:flex space-x-8">
-                    <a href="/" className="text-secondary hover:text-primary-dark">Home</a>
-                    <a href="/recipes" className="text-secondary hover:text-primary-dark">Recipes</a>
-                    <a href="/favorites" className="text-secondary hover:text-primary-dark">Favorites</a>
-                    <a href="/login" className="text-secondary hover:text-primary-dark">Login</a>
-                    <a href="/signup" className="text-secondary hover:text-primary-dark">Signup</a>
+                    <Link href="/" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Home</a>
+                    </Link>
+                    <Link href="/recipes" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Recipes</a>
+                    </Link>
+                    <Link href="/favorites" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Favorites</a>
+                    </Link>
+                    <Link href="/login" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Login</a>
+                    </Link>
+                    <Link href="/signup" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Signup</a>
+                    </Link>
+                    <Link href="/profile" legacyBehavior>
+                        <a className="text-[#696969] hover:text-primary-dark">Profile</a>
+                    </Link>
                 </div>
             </div>
 
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="md:hidden absolute top-16 left-0 w-full bg-mutedPink shadow-lg z-20">
-                    <a href="/" className="block px-4 py-2 text-secondary hover:text-primary-dark">Home</a>
-                    <a href="/recipes" className="block px-4 py-2 text-secondary hover:text-primary-dark">Recipes</a>
-                    <a href="/favorites" className="block px-4 py-2 text-secondary hover:text-primary-dark">Favorites</a>
-                    <a href="/login" className="block px-4 py-2 text-secondary hover:text-primary-dark">Login</a>
-                    <a href="/signup" className="block px-4 py-2 text-secondary hover:text-primary-dark">Signup</a>
+                    <Link href="/" legacyBehavior>
+                        <a className="block px-4 py-2 text-secondary hover:text-primary-dark">Home</a>
+                    </Link>
+                    <Link href="/recipes" legacyBehavior>
+                        <a className="block px-4 py-2 text-secondary hover:text-primary-dark">Recipes</a>
+                    </Link>
+                    <Link href="/favorites" legacyBehavior>
+                        <a className="block px-4 py-2 text-secondary hover:text-primary-dark">Favorites</a>
+                    </Link>
+                    <Link href="/login" legacyBehavior>
+                        <a className="block px-4 py-2 text-secondary hover:text-primary-dark">Login</a>
+                    </Link>
+                    <Link href="/signup" legacyBehavior>
+                        <a className="block px-4 py-2 text-secondary hover:text-primary-dark">Signup</a>
+                    </Link>
+                    <Link href="/profile" legacyBehavior>
+                        <a className="block px-4 py-2 text-secondary hover:text-primary-dark">Profile</a>
+                    </Link>
                 </div>
             )}
         </nav>
