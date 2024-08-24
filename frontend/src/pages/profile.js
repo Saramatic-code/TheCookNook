@@ -8,10 +8,19 @@ export default function Profile() {
     const [email, setEmail] = useState('john.doe@example.com');
     const [bio, setBio] = useState('A passionate cook and food lover.');
     const [profileImage, setProfileImage] = useState('/default-profile.png');
+    const [dob, setDob] = useState('1990-01-01');
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [securityQuestion, setSecurityQuestion] = useState('');
+    const [securityAnswer, setSecurityAnswer] = useState('');
 
     const handleSave = () => {
-        localStorage.setItem('phoneNumber', phoneNumber);
-        alert('Profile information saved!');
+        if (phoneNumber || username || email || bio || profileImage !== '/default-profile.png') {
+            localStorage.setItem('phoneNumber', phoneNumber);
+            alert('Thank you for updating your profile!');
+        } else {
+            alert('No updates were made.');
+        }
     };
 
     const handleImageUpload = (e) => {
@@ -29,20 +38,6 @@ export default function Profile() {
         setProfileImage('/default-profile.png');
     };
 
-    const sendTestSMS = async () => {
-        const response = await fetch('/api/send-sms', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phoneNumber }),
-        });
-
-        if (response.ok) {
-            alert('Test SMS sent!');
-        } else {
-            alert('Failed to send SMS.');
-        }
-    };
-
     return (
         <div className="wrapper flex">
             <Navbar />
@@ -52,7 +47,7 @@ export default function Profile() {
                     <h2 className="font-semibold text-lg mb-4">Profile Settings</h2>
                     <ul>
                         <li className="mb-2 cursor-pointer">
-                            <a href="/profile#personal-info">Personal Info</a>
+                            <a href="#personal-info">Personal Info</a>
                         </li>
                         <li className="mb-2 cursor-pointer">
                             <a href="/favorites">Favorites</a>
@@ -70,16 +65,14 @@ export default function Profile() {
                             <a href="/cookingHistory">Cooking History</a>
                         </li>
                         <li className="mb-2 cursor-pointer">
-                            <a href="/accountSettings">Account Settings</a>
-                        </li>
-                        <li className="mb-2 cursor-pointer">
                             <a href="/logout">Logout</a>
                         </li>
                     </ul>
                 </div>
 
                 {/* Main Content Area */}
-                <div className="main-content max-w-xl mx-auto p-4 text-[#696969]">
+                <div className="main-content max-w-3xl mx-auto p-8 text-[#696969] bg-white rounded-lg shadow-md flex-grow">
+                    {/* Personal Info Section */}
                     <div id="personal-info" className="mb-8">
                         <h1 className="text-3xl font-bold mb-4">Personal Info</h1>
                         <img
@@ -114,24 +107,75 @@ export default function Profile() {
                         />
                     </div>
 
+                    {/* Account Settings Section */}
+                    <div id="account-settings" className="mb-8">
+                        <h2 className="text-2xl font-bold mb-4">Account Settings</h2>
+                        <div className="w-full max-w-md space-y-4">
+                            <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+                                Date of Birth
+                            </label>
+                            <input
+                                id="dob"
+                                type="date"
+                                value={dob}
+                                onChange={(e) => setDob(e.target.value)}
+                                className="p-2 border rounded w-full"
+                            />
+                        </div>
+
+
+                        <div className="w-full max-w-md space-y-4 mt-8">
+                            <h2 className="text-2xl font-bold">Security Settings</h2>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                placeholder="Current Password"
+                            />
+                            <input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                placeholder="New Password"
+                            />
+                            <input
+                                type="text"
+                                value={securityQuestion}
+                                onChange={(e) => setSecurityQuestion(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                placeholder="Security Question"
+                            />
+                            <input
+                                type="text"
+                                value={securityAnswer}
+                                onChange={(e) => setSecurityAnswer(e.target.value)}
+                                className="p-2 border rounded w-full"
+                                placeholder="Security Answer"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Profile Picture Management */}
                     <div className="flex justify-center space-x-4 mt-8">
                         <button className="p-2 bg-[#F29BAA] text-white rounded hover:bg-[#D17384]">
-                            Change Profile Picture
-                            <input type="file" onChange={handleImageUpload} className="hidden" />
+                            <label htmlFor="file-upload" className="cursor-pointer">
+                                Change Profile Picture
+                            </label>
+                            <input
+                                id="file-upload"
+                                type="file"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                            />
                         </button>
                         <button onClick={removeProfileImage} className="p-2 bg-red-500 text-white rounded hover:bg-red-600">
                             Remove Profile Picture
                         </button>
-                    </div>
-
-                    <div className="flex flex-col items-center space-y-4 mt-8">
                         <button onClick={handleSave} className="p-2 bg-[#F29BAA] text-white rounded hover:bg-[#D17384]">
                             Save Profile Information
                         </button>
-                        <button onClick={sendTestSMS} className="p-2 bg-green-500 text-white rounded hover:bg-green-600">
-                            Send Test SMS
-                        </button>
-
                     </div>
                 </div>
             </div>
