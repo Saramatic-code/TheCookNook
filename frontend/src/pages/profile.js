@@ -60,9 +60,7 @@ export default function Profile() {
                         <li className="mb-2 cursor-pointer">
                             <a href="/recentlyViewed">Recently Viewed</a>
                         </li>
-                        <li className="mb-2 cursor-pointer">
-                            <a href="/uploadedRecipes">Uploaded Recipes</a>
-                        </li>
+
                         <li className="mb-2 cursor-pointer">
                             <a href="/savedRecipes">Saved Recipes</a>
                         </li>

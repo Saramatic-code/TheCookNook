@@ -9,7 +9,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #FFF4F2;
-    /* Update the background color */
+    /* Background color for the whole page */
 }
 
 body {
@@ -32,6 +32,7 @@ footer {
     margin-top: auto;
     width: 100%;
     background-color: #fcebed;
+    /* Background color for the footer */
     text-align: center;
     padding: 10px 0;
 }

@@ -1,17 +1,46 @@
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import recipes from '../../data/dummydata'; // Import the dummy data
-import { useState } from 'react';
 
 export default function RecipeDetail() {
     const router = useRouter();
     const { id } = router.query;
-    const recipe = recipes.find((r) => r.id.toString() === id);
 
+    const [recipes, setRecipes] = useState([]);
     const [shoppingList, setShoppingList] = useState([]);
 
-    if (!recipe) return <p>Recipe not found</p>;
+    useEffect(() => {
+        if (id) {
+            // Fetch server recipes
+            axios.get('http://127.0.0.1:8000/recipes/')
+                .then((response) => {
+                    const serverRecipes = response.data;
+
+                    // Fetch local recipes
+                    const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+
+                    // Combine recipes, avoiding duplicates
+                    const allRecipes = [...serverRecipes, ...localRecipes];
+                    const uniqueRecipes = allRecipes.filter((recipe, index, self) =>
+                        index === self.findIndex((r) => r.id === recipe.id)
+                    );
+
+                    setRecipes(uniqueRecipes);
+                })
+                .catch((error) => {
+                    console.error('Error fetching recipes:', error);
+                });
+        }
+    }, [id]);
+
+    const recipe = recipes.find((r) => r.id.toString() === id);
+
+    if (!recipe) {
+        console.log('Recipe not found with id:', id);
+        return <p>Recipe not found</p>;
+    }
 
     const addToShoppingList = (ingredient) => {
         setShoppingList([...shoppingList, ingredient]);
@@ -31,10 +60,17 @@ export default function RecipeDetail() {
         }
     };
 
+    const prepTimeValue = recipe.prep_time?.value ? recipe.prep_time.value : 'N/A';
+    const prepTimeUnit = recipe.prep_time?.unit ? recipe.prep_time.unit : '';
+    const cookTimeValue = recipe.cook_time?.value ? recipe.cook_time.value : 'N/A';
+    const cookTimeUnit = recipe.cook_time?.unit ? recipe.cook_time.unit : '';
+
+    const nutritionFacts = recipe.nutrition_facts || {};
+
     return (
         <div className="wrapper">
             <Navbar />
-            <div className="main-content p-4 flex flex-col items-center">
+            <div className="main-content p-4 flex flex-col items-center pb-24">
                 <div className="max-w-3xl w-full text-[#696969]">
                     <img src={recipe.image} alt={recipe.title} className="recipe-image w-full h-72 object-cover rounded-lg" />
                     <h1 className="text-4xl font-bold mt-4 text-center bg-mutedPink">{recipe.title}</h1>
@@ -48,7 +84,12 @@ export default function RecipeDetail() {
                         ))}
                     </div>
 
-                    <p className="mt-2 text-center">{recipe.prep_time} | {recipe.cook_time} | Servings: {recipe.servings}</p>
+                    {/* Displaying prep_time and cook_time */}
+                    <p className="mt-2 text-center">
+                        Prep Time: {prepTimeValue} {prepTimeUnit} |
+                        Cook Time: {cookTimeValue} {cookTimeUnit} |
+                        Servings: {recipe.servings}
+                    </p>
 
                     <h2 className="text-2xl font-semibold mt-4">Ingredients</h2>
                     <ul className="list-disc list-inside mt-2 space-y-4">
@@ -74,11 +115,15 @@ export default function RecipeDetail() {
 
                     {/* Nutritional Facts */}
                     <h2 className="text-2xl font-semibold mt-4">Nutritional Facts</h2>
-                    <ul className="list-disc list-inside mt-2">
-                        {Object.entries(recipe.nutrition_facts).map(([key, value]) => (
-                            <li key={key}>{key}: {value}</li>
-                        ))}
-                    </ul>
+                    {Object.keys(nutritionFacts).length > 0 ? (
+                        <ul className="list-disc list-inside mt-2">
+                            {Object.entries(nutritionFacts).map(([key, value]) => (
+                                <li key={key}>{key}: {value}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-xs mt-2">No nutritional facts available.</p>
+                    )}
 
                     {/* Shopping List Button */}
                     <button
