@@ -16,15 +16,18 @@ export default function MyRecipes() {
     }, []);
 
     return (
-        <div className="wrapper">
+        <div className="wrapper flex flex-col min-h-screen">
             <Navbar />
-            <div className="main-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+            <div className="main-content flex-1 max-w-6xl mx-auto p-6">
+                <h1 className="text-3xl font-bold text-center mb-6 text-[#696969]">My Recipes</h1>
                 {myRecipes.length > 0 ? (
-                    myRecipes.map((recipe) => (
-                        <RecipeCard key={recipe.id} recipe={recipe} />
-                    ))
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {myRecipes.map((recipe) => (
+                            <RecipeCard key={recipe.id} recipe={recipe} />
+                        ))}
+                    </div>
                 ) : (
-                    <p className="text-center text-[#696969]">No recipes found.</p>
+                    <p className="text-center text-lg text-[#696969] mt-10">No recipes found. Start adding your favorite recipes now!</p>
                 )}
             </div>
             <Footer />
