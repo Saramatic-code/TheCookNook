@@ -1,78 +1,51 @@
-from pydantic import BaseModel
-from typing import List, Optional
+# schemas.py
 
+from typing import Optional, List
+from pydantic import BaseModel
+
+# Base schema for Recipe
+class RecipeBase(BaseModel):
+    title: str
+    image: Optional[str] = None
+    prep_time_value: Optional[int] = None
+    prep_time_unit: Optional[str] = None
+    cook_time_value: Optional[int] = None
+    cook_time_unit: Optional[str] = None
+    servings: Optional[int] = None
+    total_cost: Optional[float] = None
+    currency: Optional[str] = None
+    nutrition_facts: Optional[dict] = None
+
+# Schema for Recipe creation
+class RecipeCreate(RecipeBase):
+    pass
+
+# Full schema for Recipe with additional fields
+class Recipe(RecipeBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+# User schema base
 class UserBase(BaseModel):
     username: str
     email: str
+    profile_description: Optional[str] = None
+    phone_number: Optional[str] = None
+    profile_image: Optional[str] = None
+    receive_sms_notifications: Optional[bool] = True
+    profile_visibility: Optional[str] = 'public'
 
+# User schema for creation
 class UserCreate(UserBase):
     password: str
 
+# Full schema for User with additional fields
 class User(UserBase):
     id: int
-
-    class Config:
-        orm_mode = True
-
-class IngredientBase(BaseModel):
-    item: str
-    quantity: str
-    notes: Optional[str] = None
-    price: float
-    currency: str
-
-class IngredientCreate(IngredientBase):
-    pass
-
-class Ingredient(IngredientBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-class RecipeBase(BaseModel):
-    title: str
-    prep_time: str
-    cook_time: str
-    servings: int
-    instructions: str
-    nutrition_facts: Optional[str] = None
-    total_cost: float
-
-class RecipeCreate(RecipeBase):
-    ingredients: List[IngredientCreate]
-
-class Recipe(RecipeBase):
-    id: int
-    user_id: int
-    ingredients: List[Ingredient]
-
-    class Config:
-        orm_mode = True
-
-class FavoriteBase(BaseModel):
-    user_id: int
-    recipe_id: int
-
-class FavoriteCreate(FavoriteBase):
-    pass
-
-class Favorite(FavoriteBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-class CommentBase(BaseModel):
-    content: str
-    user_id: int
-    recipe_id: int
-
-class CommentCreate(CommentBase):
-    pass
-
-class Comment(CommentBase):
-    id: int
+    created_at: Optional[str]
+    updated_at: Optional[str]
 
     class Config:
         orm_mode = True

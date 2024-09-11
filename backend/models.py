@@ -1,67 +1,38 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table, Text
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, JSON, Float
 from sqlalchemy.orm import relationship
-from .database import Base
-
-# Association table for many-to-many relationship between Recipe and Ingredient
-recipe_ingredient = Table(
-    'recipe_ingredient', Base.metadata,
-    Column('recipe_id', Integer, ForeignKey('recipes.id')),
-    Column('ingredient_id', Integer, ForeignKey('ingredients.id'))
-)
+from database import Base
+from sqlalchemy.sql import func
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    recipes = relationship("Recipe", back_populates="owner")
-    favorites = relationship("Favorite", back_populates="user")
-    comments = relationship("Comment", back_populates="user")
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)  # Explicitly set autoincrement
+    username = Column(String(255), unique=True, index=True, nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    profile_description = Column(Text, nullable=True)
+    phone_number = Column(String(15), nullable=True)
+    profile_image = Column(String(255), nullable=True)
+    receive_sms_notifications = Column(Boolean, default=True)
+    profile_visibility = Column(String(10), default='public')
+    password_hash = Column(String(255), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 class Recipe(Base):
     __tablename__ = "recipes"
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    prep_time = Column(String)
-    cook_time = Column(String)
-    servings = Column(Integer)
-    instructions = Column(Text)
-    nutrition_facts = Column(Text)
-    total_cost = Column(Float)
-    user_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User", back_populates="recipes")
-    ingredients = relationship("Ingredient", secondary=recipe_ingredient, back_populates="recipes")
-    favorites = relationship("Favorite", back_populates="recipe")
-    comments = relationship("Comment", back_populates="recipe")
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)  # Explicitly set autoincrement
+    title = Column(String(255), nullable=False)
+    image = Column(String(255), nullable=True)
+    prep_time_value = Column(Integer, nullable=True)
+    prep_time_unit = Column(String(10), nullable=True)
+    cook_time_value = Column(Integer, nullable=True)
+    cook_time_unit = Column(String(10), nullable=True)
+    servings = Column(Integer, nullable=True)
+    total_cost = Column(Float, nullable=True)
+    currency = Column(String(3), nullable=True)
+    nutrition_facts = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-class Ingredient(Base):
-    __tablename__ = "ingredients"
-    id = Column(Integer, primary_key=True, index=True)
-    item = Column(String, index=True)
-    quantity = Column(String)
-    notes = Column(String)
-    price = Column(Float)
-    currency = Column(String)
-
-    recipes = relationship("Recipe", secondary=recipe_ingredient, back_populates="ingredients")
-
-class Favorite(Base):
-    __tablename__ = "favorites"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    recipe_id = Column(Integer, ForeignKey("recipes.id"))
-
-    user = relationship("User", back_populates="favorites")
-    recipe = relationship("Recipe", back_populates="favorites")
-
-class Comment(Base):
-    __tablename__ = "comments"
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(Text)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    recipe_id = Column(Integer, ForeignKey("recipes.id"))
-
-    user = relationship("User", back_populates="comments")
-    recipe = relationship("Recipe", back_populates="comments")
+# Add more models for ingredients, categories, etc. as needed
