@@ -22,16 +22,27 @@ export default function Favorites() {
         return () => window.removeEventListener('storage', fetchFavorites);
     }, []);
 
+    const handleFavoriteChange = (id, isFavorite) => {
+        if (!isFavorite) {
+            setFavoriteRecipes((prevFavorites) =>
+                prevFavorites.filter((recipe) => recipe.id !== id)
+            );
+        }
+    };
+
     return (
-        <div className="wrapper">
+        <div className="wrapper flex flex-col min-h-screen">
             <Navbar />
-            <div className="main-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+            <div className="main-content flex-1 max-w-6xl mx-auto p-6">
+                <h1 className="text-3xl font-bold text-center mb-6 text-[#696969]">My Favorite Recipes</h1>
                 {favoriteRecipes.length > 0 ? (
-                    favoriteRecipes.map((recipe) => (
-                        <RecipeCard key={recipe.id} recipe={recipe} />
-                    ))
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {favoriteRecipes.map((recipe) => (
+                            <RecipeCard key={recipe.id} recipe={recipe} onFavoriteChange={handleFavoriteChange} />
+                        ))}
+                    </div>
                 ) : (
-                    <p className="text-center text-[#696969]">No favorite recipes found.</p>
+                    <p className="text-center text-lg text-[#696969] mt-10">No favorite recipes found.</p>
                 )}
             </div>
             <Footer />

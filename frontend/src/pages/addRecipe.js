@@ -19,13 +19,13 @@ export default function AddRecipe() {
     // Validation schema for form
     const validationSchema = Yup.object().shape({
         title: Yup.string().required('Title is required').max(100, 'Title cannot exceed 100 characters'),
-        prepTime: Yup.object().shape({
+        prep_time: Yup.object().shape({
             value: Yup.string()
                 .required('Preparation time is required')
                 .matches(/^\d+(-\d+)?$/, 'Preparation time must be a number or a range (e.g., "15" or "15-20")'),
             unit: Yup.string().oneOf(['mins', 'hours'], 'Invalid time unit').required('Unit is required'),
         }),
-        cookTime: Yup.object().shape({
+        cook_time: Yup.object().shape({
             value: Yup.string()
                 .required('Cook time is required')
                 .matches(/^\d+(-\d+)?$/, 'Cook time must be a number or a range (e.g., "30" or "30-40")'),
@@ -42,7 +42,7 @@ export default function AddRecipe() {
             })
         ),
         instructions: Yup.array().of(Yup.string().required('Instruction step is required')).min(1, 'At least one instruction is required'),
-        nutritionFacts: Yup.object().shape({
+        nutrition_facts: Yup.object().shape({
             calories: Yup.string()
                 .test('is-valid', 'Calories must be a number, "n/a", or empty', value =>
                     value === '' || value.toLowerCase() === 'n/a' || !isNaN(Number(value))
@@ -71,7 +71,7 @@ export default function AddRecipe() {
         defaultValues: {
             ingredients: [{ item: '', quantity: '', measurement: '', notes: '' }],
             instructions: [''],
-            nutritionFacts: { calories: '', fat: '', carbohydrates: '', protein: '', sugar: '' },
+            nutrition_facts: { calories: '', fat: '', carbohydrates: '', protein: '', sugar: '' },
             categories: [],
             tags: [],
         },
@@ -120,13 +120,13 @@ export default function AddRecipe() {
         }
 
         // Ensure correct format for prepTime and cookTime
-        const prepTime = {
-            value: data.prepTime.value || 'N/A',
-            unit: data.prepTime.unit || '',
+        const prep_time = {
+            value: data.prep_time.value || 'N/A',
+            unit: data.prep_time.unit || '',
         };
-        const cookTime = {
-            value: data.cookTime.value || 'N/A',
-            unit: data.cookTime.unit || '',
+        const cook_time = {
+            value: data.cook_time.value || 'N/A',
+            unit: data.cook_time.unit || '',
         };
 
         // Generate a unique ID for the new recipe
@@ -138,9 +138,9 @@ export default function AddRecipe() {
             image: imageUrl,
             tags,
             categories,
-            prepTime, // Include formatted prepTime
-            cookTime, // Include formatted cookTime
-            nutrition_facts: data.nutritionFacts || {} // Ensure that nutritionFacts is included and defaults to an empty object
+            prep_time, // Ensure consistent naming
+            cook_time, // Ensure consistent naming
+            nutrition_facts: data.nutrition_facts || {} // Ensure that nutrition_facts is included and defaults to an empty object
         };
 
         // Save the new recipe to localStorage
@@ -221,19 +221,19 @@ export default function AddRecipe() {
                             <div className="flex space-x-2">
                                 <input
                                     type="text"
-                                    {...register('prepTime.value')}
+                                    {...register('prep_time.value')}
                                     placeholder="e.g., 8-10"
-                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.prepTime?.value ? 'border-red-500' : ''}`}
+                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.prep_time?.value ? 'border-red-500' : ''}`}
                                 />
                                 <select
-                                    {...register('prepTime.unit')}
-                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.prepTime?.unit ? 'border-red-500' : ''}`}
+                                    {...register('prep_time.unit')}
+                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.prep_time?.unit ? 'border-red-500' : ''}`}
                                 >
                                     <option value="mins">mins</option>
                                     <option value="hours">hours</option>
                                 </select>
                             </div>
-                            {errors.prepTime && <p className="text-red-500 text-sm">{errors.prepTime.value?.message || errors.prepTime.unit?.message}</p>}
+                            {errors.prep_time && <p className="text-red-500 text-sm">{errors.prep_time.value?.message || errors.prep_time.unit?.message}</p>}
                         </div>
 
                         {/* Cook Time Input */}
@@ -242,152 +242,106 @@ export default function AddRecipe() {
                             <div className="flex space-x-2">
                                 <input
                                     type="text"
-                                    {...register('cookTime.value')}
+                                    {...register('cook_time.value')}
                                     placeholder="e.g., 30-40"
-                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.cookTime?.value ? 'border-red-500' : ''}`}
+                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.cook_time?.value ? 'border-red-500' : ''}`}
                                 />
                                 <select
-                                    {...register('cookTime.unit')}
-                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.cookTime?.unit ? 'border-red-500' : ''}`}
+                                    {...register('cook_time.unit')}
+                                    className={`mt-2 p-2 border rounded w-1/2 ${errors.cook_time?.unit ? 'border-red-500' : ''}`}
                                 >
                                     <option value="mins">mins</option>
                                     <option value="hours">hours</option>
                                 </select>
                             </div>
-                            {errors.cookTime && <p className="text-red-500 text-sm">{errors.cookTime.value?.message || errors.cookTime.unit?.message}</p>}
+                            {errors.cook_time && <p className="text-red-500 text-sm">{errors.cook_time.value?.message || errors.cook_time.unit?.message}</p>}
                         </div>
                     </div>
 
                     {/* Servings Input */}
-                    <div className="mb-4 flex justify-center">
-                        <div className="w-full max-w-xs">
-                            <label className="block font-semibold mb-2 text-lg text-center">Servings:</label>
-                            <div className="flex items-center justify-center">
-                                <div className="relative w-32">
-                                    <input
-                                        type="text"
-                                        {...register('servings')}
-                                        placeholder="e.g., 4"
-                                        className={`w-full p-2 border rounded ${errors.servings ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
-                                    />
-                                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">servings</span>
-                                </div>
-                            </div>
-                            {errors.servings && (
-                                <p className="text-red-500 text-xs mt-1 text-center">{errors.servings.message}</p>
-                            )}
-                        </div>
+                    <div className="mb-4">
+                        <label className="block font-semibold">Servings:</label>
+                        <input
+                            type="text"
+                            {...register('servings')}
+                            className={`mt-2 p-2 border rounded w-full ${errors.servings ? 'border-red-500' : ''}`}
+                        />
+                        {errors.servings && <p className="text-red-500 text-sm">{errors.servings.message}</p>}
                     </div>
 
                     {/* Categories Input */}
-                    <div className="mb-4 flex justify-center">
-                        <div className="w-full md:w-3/4">
-                            <label className="block font-semibold mb-2 text-lg">Categories:</label>
-                            <div className="space-y-2">
-                                <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                                    {categories.map((category, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center justify-between p-1 border border-gray-200 rounded-md bg-[#F3BFC4] shadow-sm"
-                                        >
-                                            <input
-                                                type="text"
-                                                value={category}
-                                                onChange={(e) => {
-                                                    const newCategories = [...categories];
-                                                    newCategories[index] = e.target.value;
-                                                    setCategories(newCategories);
-                                                }}
-                                                placeholder="Category"
-                                                className="p-1 bg-transparent w-full text-sm focus:outline-none"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveCategory(category)}
-                                                className="ml-1 p-1 bg-gray-100 text-gray-600 rounded-full hover:bg-red-200 hover:text-red-600 transition-colors"
-                                                title="Remove Category"
-                                            >
-                                                <FiX className="h-3 w-3" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex items-center mt-2">
-                                    <input
-                                        type="text"
-                                        value={newCategory}
-                                        onChange={(e) => setNewCategory(e.target.value)}
-                                        className="p-2 border rounded w-full text-sm"
-                                        placeholder="Enter a category"
-                                    />
+                    <div className="mb-4">
+                        <label className="block font-semibold">Categories:</label>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                            {categories.map((category, index) => (
+                                <div key={index} className="flex items-center bg-primary-light text-primary-dark px-2 py-1 rounded">
+                                    {category}
                                     <button
                                         type="button"
-                                        onClick={handleAddCategory}
-                                        className="ml-2 p-1 bg-primary text-white font-semibold rounded hover:bg-primary-dark transition-colors text-xs"
+                                        onClick={() => handleRemoveCategory(category)}
+                                        className="ml-1 text-xs text-red-500"
                                     >
-                                        Add
+                                        <FiX />
                                     </button>
                                 </div>
-                            </div>
+                            ))}
+                        </div>
+                        <div className="flex">
+                            <input
+                                type="text"
+                                value={newCategory}
+                                onChange={(e) => setNewCategory(e.target.value)}
+                                placeholder="Enter a category"
+                                className="p-2 border rounded w-full"
+                            />
+                            <button
+                                type="button"
+                                onClick={handleAddCategory}
+                                className="ml-2 p-1 bg-primary text-white rounded hover:bg-primary-dark"
+                            >
+                                Add
+                            </button>
                         </div>
                     </div>
 
                     {/* Tags Input */}
-                    <div className="mb-4 flex justify-center">
-                        <div className="w-full md:w-3/4">
-                            <label className="block font-semibold mb-2 text-lg">Tags:</label>
-                            <div className="space-y-2">
-                                <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                                    {tags.map((tag, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center justify-between p-1 border border-gray-200 rounded-md bg-[#F3BFC4] shadow-sm"
-                                        >
-                                            <input
-                                                type="text"
-                                                value={tag}
-                                                onChange={(e) => {
-                                                    const newTags = [...tags];
-                                                    newTags[index] = e.target.value;
-                                                    setTags(newTags);
-                                                }}
-                                                placeholder="Tag"
-                                                className="p-1 bg-transparent w-full text-sm focus:outline-none"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveTag(tag)}
-                                                className="ml-1 p-1 bg-gray-100 text-gray-600 rounded-full hover:bg-red-200 hover:text-red-600 transition-colors"
-                                                title="Remove Tag"
-                                            >
-                                                <FiX className="h-3 w-3" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex items-center mt-2">
-                                    <input
-                                        type="text"
-                                        value={newTag}
-                                        onChange={(e) => setNewTag(e.target.value)}
-                                        className="p-2 border rounded w-full text-sm"
-                                        placeholder="Enter a tag"
-                                    />
+                    <div className="mb-4">
+                        <label className="block font-semibold">Tags:</label>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                            {tags.map((tag, index) => (
+                                <div key={index} className="flex items-center bg-primary-light text-primary-dark px-2 py-1 rounded">
+                                    {tag}
                                     <button
                                         type="button"
-                                        onClick={handleAddTag}
-                                        className="ml-2 p-1 bg-primary text-white font-semibold rounded hover:bg-primary-dark transition-colors text-xs"
+                                        onClick={() => handleRemoveTag(tag)}
+                                        className="ml-1 text-xs text-red-500"
                                     >
-                                        Add
+                                        <FiX />
                                     </button>
                                 </div>
-                            </div>
+                            ))}
+                        </div>
+                        <div className="flex">
+                            <input
+                                type="text"
+                                value={newTag}
+                                onChange={(e) => setNewTag(e.target.value)}
+                                placeholder="Enter a tag"
+                                className="p-2 border rounded w-full"
+                            />
+                            <button
+                                type="button"
+                                onClick={handleAddTag}
+                                className="ml-2 p-1 bg-primary text-white rounded hover:bg-primary-dark"
+                            >
+                                Add
+                            </button>
                         </div>
                     </div>
 
                     {/* Ingredients Input */}
                     <div className="mb-4">
-                        <label className="block font-semibold mb-2 text-lg">Ingredients:</label>
+                        <label className="block font-semibold">Ingredients:</label>
                         <Controller
                             name="ingredients"
                             control={control}
@@ -477,7 +431,7 @@ export default function AddRecipe() {
 
                     {/* Instructions Input */}
                     <div className="mb-4">
-                        <label className="block font-semibold mb-2 text-lg">Instructions:</label>
+                        <label className="block font-semibold">Instructions:</label>
                         <Controller
                             name="instructions"
                             control={control}
@@ -526,7 +480,7 @@ export default function AddRecipe() {
 
                     {/* Nutrition Facts Input */}
                     <div className="mb-4">
-                        <label className="block font-semibold mb-2 text-lg">Nutrition Facts:</label>
+                        <label className="block font-semibold">Nutrition Facts:</label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Calories Input */}
                             <div className="flex items-center space-x-2">
@@ -534,14 +488,14 @@ export default function AddRecipe() {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        {...register('nutritionFacts.calories')}
+                                        {...register('nutrition_facts.calories')}
                                         placeholder="e.g., 200"
-                                        className={`w-full p-2 border rounded ${errors.nutritionFacts?.calories ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
+                                        className={`w-full p-2 border rounded ${errors.nutrition_facts?.calories ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
                                     />
                                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">(kcal)</span>
                                 </div>
-                                {errors.nutritionFacts?.calories && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.nutritionFacts.calories.message}</p>
+                                {errors.nutrition_facts?.calories && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.nutrition_facts.calories.message}</p>
                                 )}
                             </div>
 
@@ -551,14 +505,14 @@ export default function AddRecipe() {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        {...register('nutritionFacts.fat')}
+                                        {...register('nutrition_facts.fat')}
                                         placeholder="e.g., 10"
-                                        className={`w-full p-2 border rounded ${errors.nutritionFacts?.fat ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
+                                        className={`w-full p-2 border rounded ${errors.nutrition_facts?.fat ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
                                     />
                                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">(g)</span>
                                 </div>
-                                {errors.nutritionFacts?.fat && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.nutritionFacts.fat.message}</p>
+                                {errors.nutrition_facts?.fat && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.nutrition_facts.fat.message}</p>
                                 )}
                             </div>
 
@@ -568,14 +522,14 @@ export default function AddRecipe() {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        {...register('nutritionFacts.carbohydrates')}
+                                        {...register('nutrition_facts.carbohydrates')}
                                         placeholder="e.g., 30"
-                                        className={`w-full p-2 border rounded ${errors.nutritionFacts?.carbohydrates ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
+                                        className={`w-full p-2 border rounded ${errors.nutrition_facts?.carbohydrates ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
                                     />
                                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">(g)</span>
                                 </div>
-                                {errors.nutritionFacts?.carbohydrates && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.nutritionFacts.carbohydrates.message}</p>
+                                {errors.nutrition_facts?.carbohydrates && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.nutrition_facts.carbohydrates.message}</p>
                                 )}
                             </div>
 
@@ -585,14 +539,14 @@ export default function AddRecipe() {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        {...register('nutritionFacts.protein')}
+                                        {...register('nutrition_facts.protein')}
                                         placeholder="e.g., 5"
-                                        className={`w-full p-2 border rounded ${errors.nutritionFacts?.protein ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
+                                        className={`w-full p-2 border rounded ${errors.nutrition_facts?.protein ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
                                     />
                                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">(g)</span>
                                 </div>
-                                {errors.nutritionFacts?.protein && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.nutritionFacts.protein.message}</p>
+                                {errors.nutrition_facts?.protein && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.nutrition_facts.protein.message}</p>
                                 )}
                             </div>
 
@@ -602,14 +556,14 @@ export default function AddRecipe() {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        {...register('nutritionFacts.sugar')}
+                                        {...register('nutrition_facts.sugar')}
                                         placeholder="e.g., 15"
-                                        className={`w-full p-2 border rounded ${errors.nutritionFacts?.sugar ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
+                                        className={`w-full p-2 border rounded ${errors.nutrition_facts?.sugar ? 'border-red-500' : 'border-gray-300'} focus:ring-primary focus:border-primary`}
                                     />
                                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">(g)</span>
                                 </div>
-                                {errors.nutritionFacts?.sugar && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.nutritionFacts.sugar.message}</p>
+                                {errors.nutrition_facts?.sugar && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.nutrition_facts.sugar.message}</p>
                                 )}
                             </div>
                         </div>
