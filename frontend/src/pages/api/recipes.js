@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
             // Fetch data from your FastAPI backend
-            const response = await axios.get('http://127.0.0.1:8000/recipes/');
+            const response = await axios.get('http://127.0.0.1:8002/recipes/');
             res.status(200).json(response.data);
         } catch (error) {
             console.error('Error fetching recipes from backend:', error);

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Sidebar from '../components/Sidebar';
+import Image from 'next/image';
 
 export default function EditProfile() {
     const router = useRouter();
@@ -12,14 +14,13 @@ export default function EditProfile() {
     const [profileImage, setProfileImage] = useState('/default-profile.png');
     const [receiveSMSNotifications, setReceiveSMSNotifications] = useState(true);
     const [profileVisibility, setProfileVisibility] = useState('public');
-    const [securityQuestion, setSecurityQuestion] = useState('What was your first pet\'s name?');
+    const [securityQuestion, setSecurityQuestion] = useState("What was your first pet's name?");
     const [securityAnswer, setSecurityAnswer] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for mobile dropdown menu
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
-        // Load existing profile data from localStorage
         const profileData = JSON.parse(localStorage.getItem('profile')) || {};
         setPhoneNumber(profileData.phoneNumber || '');
         setUsername(profileData.username || '');
@@ -28,7 +29,7 @@ export default function EditProfile() {
         setProfileImage(profileData.profileImage || '/default-profile.png');
         setReceiveSMSNotifications(profileData.account_settings?.receive_sms_notifications ?? true);
         setProfileVisibility(profileData.account_settings?.profile_visibility ?? 'public');
-        setSecurityQuestion(profileData.security?.security_question || 'What was your first pet\'s name?');
+        setSecurityQuestion(profileData.security?.security_question || "What was your first pet's name?");
         setSecurityAnswer(profileData.security?.security_answer || '');
     }, []);
 
@@ -65,188 +66,148 @@ export default function EditProfile() {
         }
     };
 
-    const handleBack = () => {
-        router.push('/profile');
-    };
-
     return (
-        <div className="wrapper flex flex-col min-h-screen">
+        <div className="wrapper flex flex-col min-h-screen bg-pink-100">
             <Navbar />
-            <div className="flex flex-col md:flex-row w-full p-4 justify-center relative space-y-4 md:space-y-0">
-                {/* Dropdown Menu for Small Screens */}
-                <div className="md:hidden w-full p-4">
-                    <button
-                        className="p-2 bg-gray-100 text-gray-700 rounded-lg shadow-md w-full text-left flex justify-between"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    >
-                        Profile Settings
-                        <span>{isDropdownOpen ? '▲' : '▼'}</span>
-                    </button>
-                    {isDropdownOpen && (
-                        <ul className="bg-gray-100 mt-2 rounded-lg shadow-md p-2">
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/profile#personal-info" className="hover:text-primary">Personal Info</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/favorites" className="hover:text-primary">Favorites</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/recentlyViewed" className="hover:text-primary">Recently Viewed</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/savedRecipes" className="hover:text-primary">Saved Recipes</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/cookingHistory" className="hover:text-primary">Cooking History</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/editProfile" className="hover:text-primary">Edit Profile</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/oldFavorites" className="hover:text-primary">Old Favorites</a>
-                            </li>
-                            <li className="cursor-pointer p-2 hover:bg-gray-200">
-                                <a href="/logout" className="hover:text-primary">Logout</a>
-                            </li>
-                        </ul>
-                    )}
-                </div>
+            <div className="flex flex-col md:flex-row w-full p-4 justify-center space-y-4 md:space-y-0">
 
-                {/* Sidebar Menu for Larger Screens */}
-                <div className="hidden md:block sidebar p-4 bg-gray-100 w-1/4 mr-8 rounded-lg shadow-sm sticky top-16 h-full">
-                    <h2 className="font-semibold text-lg mb-4">Profile Settings</h2>
-                    <ul className="space-y-2">
-                        <li className="cursor-pointer">
-                            <a href="/profile#personal-info" className="hover:text-primary">Personal Info</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/favorites" className="hover:text-primary">Favorites</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/recentlyViewed" className="hover:text-primary">Recently Viewed</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/savedRecipes" className="hover:text-primary">Saved Recipes</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/cookingHistory" className="hover:text-primary">Cooking History</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/editProfile" className="hover:text-primary">Edit Profile</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/oldFavorites" className="hover:text-primary">Old Favorites</a>
-                        </li>
-                        <li className="cursor-pointer">
-                            <a href="/logout" className="hover:text-primary">Logout</a>
-                        </li>
-                    </ul>
-                </div>
+                {/* Sidebar Component */}
+                <Sidebar
+                    isDropdownOpen={isDropdownOpen}
+                    toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="md:w-64 w-full sticky top-24 md:mr-8"
+                />
 
                 {/* Main Content Area */}
-                <div className="main-content flex-1 max-w-3xl p-6 text-[#696969] bg-white rounded-lg shadow-md space-y-6">
-                    <h1 className="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
-                    <div className="flex flex-col items-center mb-4">
-                        <img
-                            src={profileImage}
-                            alt="Profile Pic"
-                            className="rounded-full h-24 w-24 object-cover mb-4"
-                        />
-                        <button className="p-2 bg-primary-light text-primary-dark rounded hover:bg-primary transition-colors mb-4">
-                            <label className="cursor-pointer">
-                                Change Profile Picture
-                                <input type="file" onChange={handleImageUpload} className="hidden" />
-                            </label>
-                        </button>
-                    </div>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="mt-4 p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                        placeholder="Username"
-                    />
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="mt-4 p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                        placeholder="Email"
-                    />
-                    <textarea
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        className="mt-4 p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                        placeholder="Bio"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Enter your phone number"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="mt-4 p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                <div className="flex-1 max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6">
+                    <h1 className="text-2xl font-bold text-center text-[#696969] mb-4">Edit Profile</h1>
 
-                    {/* Account Settings */}
-                    <div className="mt-4">
-                        <h2 className="text-xl font-semibold mb-2 text-gray-800">Account Settings</h2>
-                        <div className="flex items-center mb-4">
-                            <label className="mr-2">Receive SMS Notifications:</label>
-                            <input
-                                type="checkbox"
-                                checked={receiveSMSNotifications}
-                                onChange={(e) => setReceiveSMSNotifications(e.target.checked)}
+                    <form>
+                        {/* Profile Image */}
+                        <div className="flex flex-col items-center mb-6">
+                            <Image
+                                src={profileImage}
+                                alt="Profile Pic"
+                                className="rounded-full h-32 w-32 object-cover mb-4 border-4 border-primary shadow-md"
+                                width={128}
+                                height={128}
                             />
+                            <button className="p-2 px-4 bg-primary-light text-primary-dark rounded-full hover:bg-primary transition-colors font-semibold">
+                                <label className="cursor-pointer">
+                                    Change Profile Picture
+                                    <input type="file" onChange={handleImageUpload} className="hidden" />
+                                </label>
+                            </button>
                         </div>
-                        <div className="mb-4">
-                            <label className="mr-2">Profile Visibility:</label>
+
+                        {/* User Information */}
+                        <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
+                            <h2 className="text-xl font-semibold text-[#696969]">User Information</h2>
+                            <div>
+                                <label className="block font-semibold text-gray-800">Username</label>
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="w-full p-2 border rounded text-gray-700"
+                                    placeholder="Username"
+                                />
+                            </div>
+                            <div>
+                                <label className="block font-semibold text-[#696969]">Email</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full p-2 border rounded text-gray-700"
+                                    placeholder="Email"
+                                />
+                            </div>
+                            <div>
+                                <label className="block font-semibold text-[#696969]">Bio</label>
+                                <textarea
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                    className="w-full p-2 border rounded text-gray-700"
+                                    placeholder="Bio"
+                                />
+                            </div>
+                            <div>
+                                <label className="block font-semibold text-[#696969]">Phone Number</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter your phone number"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    className="w-full p-2 border rounded text-gray-700"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Account Settings */}
+                        <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h2 className="text-xl font-semibold mb-2 text-[#696969]">Account Settings</h2>
+                            <div className="flex items-center mb-4 space-x-3">
+                                <label className="text-[#696969]">Receive SMS Notifications:</label>
+                                <input
+                                    type="checkbox"
+                                    checked={receiveSMSNotifications}
+                                    onChange={(e) => setReceiveSMSNotifications(e.target.checked)}
+                                    className="transform scale-125"
+                                />
+                            </div>
+                            <label className="text-[#696969]">Profile Visibility:</label>
                             <select
                                 value={profileVisibility}
                                 onChange={(e) => setProfileVisibility(e.target.value)}
-                                className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full p-2 border rounded mt-2 text-[#696969]"
                             >
                                 <option value="public">Public</option>
                                 <option value="private">Private</option>
                             </select>
                         </div>
-                    </div>
 
-                    {/* Security Settings */}
-                    <div className="mt-4">
-                        <h2 className="text-xl font-semibold mb-2 text-gray-800">Security</h2>
-                        <input
-                            type="password"
-                            placeholder="Current Password"
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                        <input
-                            type="password"
-                            placeholder="New Password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary mt-4"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Security Question"
-                            value={securityQuestion}
-                            onChange={(e) => setSecurityQuestion(e.target.value)}
-                            className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary mt-4"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Security Answer"
-                            value={securityAnswer}
-                            onChange={(e) => setSecurityAnswer(e.target.value)}
-                            className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-primary mt-4"
-                        />
-                    </div>
+                        {/* Security Settings */}
+                        <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h2 className="text-xl font-semibold mb-2 text-[#696969]">Security</h2>
+                            <input
+                                type="password"
+                                placeholder="Current Password"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                className="w-full p-2 border rounded mb-4 text-gray-700"
+                            />
+                            <input
+                                type="password"
+                                placeholder="New Password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="w-full p-2 border rounded mb-4 text-[#696969]"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Security Question"
+                                value={securityQuestion}
+                                onChange={(e) => setSecurityQuestion(e.target.value)}
+                                className="w-full p-2 border rounded mb-4 text-[#696969]"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Security Answer"
+                                value={securityAnswer}
+                                onChange={(e) => setSecurityAnswer(e.target.value)}
+                                className="w-full p-2 border rounded mb-4 text-[#696969]"
+                            />
+                        </div>
 
-                    <button onClick={handleSave} className="p-2 mt-4 bg-primary-light text-primary-dark rounded hover:bg-primary transition-colors w-full">
-                        Save Profile Information
-                    </button>
+                        {/* Save Button */}
+                        <button
+                            onClick={handleSave}
+                            className="w-full p-3 bg-primary text-white rounded font-semibold hover:bg-primary-dark transition-colors mt-6"
+                        >
+                            Save Profile Information
+                        </button>
+                    </form>
                 </div>
             </div>
             <Footer />

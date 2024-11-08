@@ -1,112 +1,176 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import SearchBar from './SearchBar';
+import api from '../api/axios';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isMenuExpanded, setIsMenuExpanded] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [profileImage, setProfileImage] = useState('/default-profile.png');
     const router = useRouter();
 
     useEffect(() => {
-        const handleRouteChange = () => {
-            setIsOpen(false);
+        const checkLoginStatus = async () => {
+            try {
+                const response = await api.get('/auth/status');
+                if (response.data.isLoggedIn) {
+                    setIsLoggedIn(true);
+                    setProfileImage(response.data.profileImage || '/default-profile.png');
+                } else {
+                    setIsLoggedIn(false);
+                }
+            } catch (error) {
+                console.error('Error checking login status:', error);
+            }
         };
+        checkLoginStatus();
+    }, []);
 
-        router.events.on('routeChangeStart', handleRouteChange);
-        return () => {
-            router.events.off('routeChangeStart', handleRouteChange);
-        };
-    }, [router]);
+    const toggleMenu = () => setIsOpen((prev) => !prev);
+    const toggleNestedMenu = () => setIsMenuExpanded((prev) => !prev);
 
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
+    const handleLogout = async () => {
+        try {
+            await api.post('/auth/logout');
+            setIsLoggedIn(false);
+            router.push('/');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
     };
 
     return (
-        <nav className="bg-mutedPink py-2 px-4">
-            <div className="max-w-screen-xl mx-auto flex justify-between items-center relative">
+        <nav className="bg-mutedPink py-3 shadow-md relative z-30">
+            <div className="container mx-auto max-w-screen-xl flex justify-between items-center px-4">
                 {/* Logo and Site Title */}
-                <div className="flex items-center">
+                <div className="flex items-center space-x-2">
                     <Link href="/" legacyBehavior>
                         <a className="flex items-center">
-                            {/* Display both parts of the logo side by side */}
-                            <img
-                                src="/logo_p1.png"
-                                alt="The Cook Nook Logo Part 1"
-                                className="h-12 w-auto mr-2"
-                            />
-                            {/* HTML for logo part 2 */}
-                            <div className="ml-2 text-center flex flex-col items-center text-[#696969]">
-                                <div className="text-3xl font-belleza">The Cook Nook</div>
-                                <div className="text-sm font-josefin-italic italic">Connecting with Flavors</div>
+                            <Image src="/TheCookNook2.png" alt="The Cook Nook Logo" width={60} height={45} />
+                            <div className="ml-2 text-center hidden md:block">
+                                <div className="text-2xl font-belleza text-[#696969]">The Cook Nook</div>
+                                <div className="text-xs italic font-josefin-italic text-[#696969]">A Recipe for Connection</div>
                             </div>
                         </a>
                     </Link>
                 </div>
 
-                {/* Hamburger Menu Button for Mobile */}
-                <div className="md:hidden">
-                    <button
-                        onClick={toggleMenu}
-                        className="text-secondary focus:outline-none"
-                    >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
+                {/* Centered Search Bar */}
+                <div className="flex-grow flex justify-center mx-4">
+                    <div className="w-full max-w-md">
+                        <SearchBar />
+                    </div>
+                </div>
+
+                {/* Profile Image as Main Menu Button for Mobile */}
+                <div className="md:hidden relative">
+                    <button onClick={toggleMenu} className="focus:outline-none">
+                        <Image src={profileImage} alt="Profile" width={40} height={40} className="rounded-full" />
                     </button>
                 </div>
 
                 {/* Desktop Links */}
-                <div className="hidden md:flex space-x-8">
-                    <Link href="/" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Home</a>
-                    </Link>
-                    <Link href="/myRecipes" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">My Recipes</a>
-                    </Link>
-                    <Link href="/addRecipe" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Add Recipe</a>
-                    </Link>
-                    <Link href="/favorites" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Favorites</a>
-                    </Link>
-                    <Link href="/login" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Login</a>
-                    </Link>
-                    <Link href="/register" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Register</a>
-                    </Link>
-                    <Link href="/profile" legacyBehavior>
-                        <a className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Profile</a>
-                    </Link>
-                </div>
+                <div className="hidden md:flex items-center space-x-6">
+                    <Link href="/" className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Home</Link>
+                    <Link href="/about" className="text-[#696969] hover:text-primary-dark transition-colors text-lg">About</Link>
+                    <Link href="/myRecipes" className="text-[#696969] hover:text-primary-dark transition-colors text-lg">My Recipes</Link>
+                    <Link href="/addRecipe" className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Add Recipe</Link>
+                    <Link href="/favorites" className="text-[#696969] hover:text-primary-dark transition-colors text-lg">Favorites</Link>
 
-                {/* Mobile Menu */}
-                {isOpen && (
-                    <div className="md:hidden absolute top-full left-0 w-full bg-mutedPink shadow-lg z-20">
-                        <Link href="/" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>Home</a>
-                        </Link>
-                        <Link href="/myRecipes" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>My Recipes</a>
-                        </Link>
-                        <Link href="/addRecipe" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>Add Recipe</a>
-                        </Link>
-                        <Link href="/favorites" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>Favorites</a>
-                        </Link>
-                        <Link href="/login" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>Login</a>
-                        </Link>
-                        <Link href="/register" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>Register</a>
-                        </Link>
-                        <Link href="/profile" legacyBehavior>
-                            <a className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>Profile</a>
-                        </Link>
+                    {/* Profile Image and Dropdown for Desktop */}
+                    <div className="relative">
+                        <button onClick={toggleMenu} className="focus:outline-none">
+                            <Image src={profileImage} alt="Profile" width={30} height={30} className="rounded-full" />
+                        </button>
+                        {isOpen && (
+                            <div className="absolute right-0 mt-2 w-36 bg-white rounded-lg shadow-lg py-2 z-10">
+                                {isLoggedIn ? (
+                                    <>
+                                        <Link href="/profile" className="block px-4 py-2 text-gray-700 hover:bg-mutedPink transition-colors">Profile</Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-mutedPink transition-colors"
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link href="/login" className="block px-4 py-2 text-gray-700 hover:bg-mutedPink transition-colors">Login</Link>
+                                        <Link href="/register" className="block px-4 py-2 text-gray-700 hover:bg-mutedPink transition-colors">Signup</Link>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
-                )}
+                </div>
             </div>
+
+            {/* Mobile Menu */}
+            {isOpen && (
+                <div className="md:hidden absolute top-full right-0 w-40 bg-mutedPink shadow-lg z-20 py-4">
+                    {/* "Menu" item for Nested Links */}
+                    <div className="flex flex-col items-center space-y-2 mb-4">
+                        <button
+                            onClick={toggleNestedMenu}
+                            className="text-gray-700 hover:bg-mutedPink px-4 py-2 rounded-lg transition-colors w-full text-center"
+                        >
+                            Menu
+                        </button>
+                        {isMenuExpanded && (
+                            <div className="w-full text-center">
+                                <Link href="/" className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>
+                                    Home
+                                </Link>
+                                <Link href="/about" className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>
+                                    About
+                                </Link>
+                                <Link href="/myRecipes" className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>
+                                    My Recipes
+                                </Link>
+                                <Link href="/addRecipe" className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>
+                                    Add Recipe
+                                </Link>
+                                <Link href="/favorites" className="block px-4 py-2 text-secondary hover:text-primary-dark transition-colors" onClick={toggleMenu}>
+                                    Favorites
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Login/Profile Links */}
+                    <div className="flex flex-col items-center space-y-2 mt-2">
+                        {isLoggedIn ? (
+                            <>
+                                <Link href="/profile" className="text-gray-700 hover:bg-mutedPink px-4 py-2 rounded-lg transition-colors" onClick={toggleMenu}>
+                                    Profile
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        handleLogout();
+                                        toggleMenu();
+                                    }}
+                                    className="text-gray-700 hover:bg-mutedPink px-4 py-2 w-full text-center rounded-lg transition-colors"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link href="/login" className="text-gray-700 hover:bg-mutedPink px-4 py-2 rounded-lg transition-colors" onClick={toggleMenu}>
+                                    Login
+                                </Link>
+                                <Link href="/register" className="text-gray-700 hover:bg-mutedPink px-4 py-2 rounded-lg transition-colors" onClick={toggleMenu}>
+                                    Signup
+                                </Link>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </nav>
     );
 };
