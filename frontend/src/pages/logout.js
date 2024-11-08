@@ -1,3 +1,4 @@
+// src/pages/logout.js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
@@ -14,38 +15,23 @@ export default function Logout() {
             router.push('/login'); // Redirect to login page
         }, 1000); // Simulate a delay for logging out
 
-        return () => setIsLoggingOut(false); // Cleanup to handle component unmount
+        return () => setIsLoggingOut(false); // Optional cleanup for component unmount
     }, [router]);
 
     return (
-        <div className="wrapper flex flex-col min-h-screen">
+        <div className="wrapper flex flex-col min-h-screen bg-gray-50">
             <Navbar />
             <div className="flex flex-1 items-center justify-center p-6">
                 {isLoggingOut ? (
                     <div className="text-center">
                         <p className="text-xl font-semibold text-gray-700">Logging you out...</p>
                         <div className="mt-4">
-                            <div className="loader"></div> {/* Simple CSS loader */}
+                            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-primary"></div> {/* Tailwind spinner */}
                         </div>
                     </div>
                 ) : null}
             </div>
             <Footer />
-            <style jsx>{`
-                .loader {
-                    border: 4px solid #f3f3f3; 
-                    border-top: 4px solid #3498db;
-                    border-radius: 50%;
-                    width: 24px;
-                    height: 24px;
-                    animation: spin 1s linear infinite;
-                }
-                
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `}</style>
         </div>
     );
 }

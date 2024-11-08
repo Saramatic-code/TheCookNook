@@ -1,16 +1,20 @@
+// src/pages/index.js
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
+import api from '../api/axios';
+
 
 export default function Home() {
     const [recipes, setRecipes] = useState([]);
 
     useEffect(() => {
-        axios.get('/api/recipes')
+        // Fetch recipes from the correct endpoint: '/recipes'
+        api.get('/recipes')
             .then((response) => {
-                const serverRecipes = response.data;
+                console.log('API Response:', response.data); // Log the response to verify its structure
+                const serverRecipes = response.data;  // Assuming the API returns an array directly
                 const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
                 const allRecipes = [...serverRecipes, ...localRecipes];
                 const uniqueRecipes = allRecipes.filter((recipe, index, self) =>
@@ -22,7 +26,6 @@ export default function Home() {
                 console.error('Error fetching recipes:', error);
             });
     }, []);
-
 
     return (
         <div className="wrapper flex flex-col min-h-screen">
